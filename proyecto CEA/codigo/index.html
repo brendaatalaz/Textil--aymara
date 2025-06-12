@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma Textil Aymara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
+  <style>
+    /* Importar la fuente 'Festive' */
+    @import url('https://fonts.googleapis.com/css2?family=Festive&display=swap');
+
+    body {
+      font-family: 'Festive', cursive; /* Ahora esta fuente se aplicará */
+      font-size: 20px;
+      margin: 0;
+      background: #f4f1ec;
+      color: #333;
+    }
+    header {
+      background-color: #8d4a2c;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background: #bf6b30;
+      padding: 10px;
+    }
+    nav button {
+      background: #fff3e6;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    #chat-container {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 300px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+    }
+    #chat-log {
+      height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    #chat-log div {
+      margin-bottom: 5px;
+    }
+    #chat-input {
+      width: calc(100% - 20px);
+      padding: 5px;
+    }
+    p{
+          font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+          color: #000000;
+        }
+    li{
+      font-family: cursive;
+      font-size: 18px;
+      font-weight: bold;
+      color: rgb(33, 77, 7);
+    }
+    h2{
+      font-family: cursive;
+      font-weight: bold;
+    }
+    /* Estilos específicos para el quiz */
+    .quiz-container {
+      background: #9ec0d3;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .quiz-container button { /* Asegúrate de que el botón del quiz tenga el estilo correcto */
+      background-color: #8B4513;
+      color: white; /* Cambié el color del texto para que sea visible */
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Estilos para la galería de imágenes (NUEVO) */
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .image-item {
+        width: 120px;
+        height: 120px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .image-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* ¡Clave para uniformidad! */
+        transition: transform 0.3s ease;
+    }
+
+    /* Opcional: efecto de zoom al pasar el mouse por encima */
+    .image-item img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Estilos para el Modal (fondo oscuro y ventana flotante) (NUEVO) */
+    .modal {
+        display: none; /* Oculto por defecto */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 80%;
+        max-height: 80vh;
+        border-radius: 5px;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    /* Animación de zoom para el modal */
+    @keyframes zoom {
+        from {transform: scale(0.1)}
+        to {transform: scale(1)}
+    }
+
+    /* Botón de cerrar (la X) */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Estilos para el formulario de registro en la sección de contacto (NUEVO) */
+    .registration-form {
+        background: #fdfdfd;
+        padding: 25px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .registration-form h3 {
+        text-align: center;
+        color: #8d4a2c;
+        margin-bottom: 20px;
+        font-family: 'Yeseva One', serif;
+    }
+
+    .registration-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+        font-family: Arial, sans-serif; /* Usar una fuente más legible para etiquetas */
+        font-size: 16px;
+    }
+
+    .registration-form input[type="text"],
+    .registration-form input[type="email"],
+    .registration-form textarea {
+        width: calc(100% - 22px); /* Para compensar padding y border */
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+    }
+
+    .registration-form input[type="text"]:focus,
+    .registration-form input[type="email"]:focus,
+    .registration-form textarea:focus {
+        border-color: #bf6b30;
+        outline: none;
+        box-shadow: 0 0 5px rgba(191, 107, 48, 0.5);
+    }
+
+    .registration-form button[type="submit"] {
+        background-color: #bf6b30;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        display: block; /* Para que ocupe todo el ancho si quieres centrarlo */
+        width: 100%; /* Opcional: que ocupe todo el ancho disponible */
+        transition: background-color 0.3s ease;
+    }
+
+    .registration-form button[type="submit"]:hover {
+        background-color: #8d4a2c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ARTE TEXTIL AYMARA</h1>
+    <p>Preservando saberes ancestrales</p>
+  </header>
+  <nav>
+    <button onclick="mostrarSeccion('inicio')">Inicio</button>
+    <button onclick="mostrarSeccion('saberes')">Saberes</button>
+    <button onclick="mostrarSeccion('galeria')">Galería</button>
+    <button onclick="mostrarSeccion('aprende')">Aprende</button>
+    <button onclick="mostrarSeccion('contacto')">Contacto</button>
+  </nav>
+
+  <section id="inicio" class="active">
+    <h2>Bienvenida</h2>
+    <p>Explora la riqueza del tejido Aymara, una expresión viva de identidad y espiritualidad.</p>
+    <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/Tejiendo Tradiciones Andinas en Paisaje.png" alt="bienvenida" width="200">
+  </section>
+
+  <section id="saberes">
+    <h2>Saberes Ancestrales</h2>
+    <ul>
+      <li> 🧶Historia del tejido Aymara</li>
+          <p>El arte textil Aymara es una de las expresiones más antiguas y significativas de la cultura andina.
+Sus orígenes se remontan a épocas preincaicas, siendo los tejidos no solo objetos utilitarios,
+sino también portadores de identidad, espiritualidad y conocimiento ancestral.</p>
+
+   <p>Los tejidos eran utilizados para: </p>
+
+<p>*Vestimenta ritual y cotidiana.</p>
+<p>*Transmisión de saberes y cosmovisión.</p>
+<p>*Representación de la relación con la naturaleza, los ciclos agrícolas y el entorno espiritual.</p>
+<p>Las comunidades Aymaras han mantenido sus prácticas textiles a través de generaciones, gracias al rol de
+ las mujeres tejedoras, consideradas guardianas del conocimient</p>
+      <li>Técnicas y herramientas tradicionales</li>
+      <p>🧵 Técnicas tradicionales del tejido Aymara</p>
+      <p> Las técnicas Aymaras se caracterizan por su complejidad y por el uso de telares tradicionales. Entre las más importantes se encuentran:</p>
+      <p> -Telar de cintura: usado por mujeres, permite la elaboración de tejidos planos, anchos y finos.</p>
+      <p> -Telar de estaca (k’isa): estructura vertical con estacas en el suelo. Se usa para tejidos grandes como mantas (aguayos).</p>
+      <p> -Hilado manual con pushka: uso del huso para transformar la fibra (de alpaca, llama u oveja) en hilo.</p>
+      <p>Otras prácticas:</P>
+        <ol>
+        <li><p>-Uso de tintes naturales extraídos de plantas, minerales e insectos.</p></li>
+        <li><p>-Lavado y tratamiento artesanal de las fibras.</p></li>
+        <li><p>-El tejido se realiza en comunidad, con significado ritual y educativo.</p></li>
+        </ol>
+
+      <li>Simbolismo en los diseños</li>
+ <p> Cada diseño textil Aymara transmite mensajes y tiene significados profundos. Algunos ejemplos:</p>
+
+<p>-Pallay: palabra quechua/aymara que refiere al diseño o motivo simbólico en el tejido.</p>
+
+<p>-Chakana (cruz andina): símbolo sagrado que representa la conexión entre el mundo terrenal, espiritual y cósmico.</p>
+
+<p>-Q’inti (colibrí): representa energía, sabiduría y comunicación con los espíritus.</p>
+
+<p>-Pachamama (Madre Tierra): se representa mediante elementos de la naturaleza, como montañas, ríos y animales.</p>
+
+<p>Los colores también tienen valor simbólico:</p>
+
+<p>*Rojo: vida, energía, sangre.</p>
+
+<p>*Negro: tierra, fuerza ancestral.</p>
+
+<p>*Verde: naturaleza y renovación.</p>
+
+<p>*Amarillo: sol, espiritualidad</p>
+    </ul>
+  </section>
+
+  <section id="galeria">
+    <h2>Galería</h2>
+    <p>Aquí podrás ver tejidos de tejedoras.</p>
+
+    <div class="gallery-container">
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 4.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 4.jpg" alt="imagen1">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images.jpg" alt="imagen2">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images3.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images3.jpg" alt="imagen3">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/hilado-para-phullu.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/hilado-para-phullu.jpg" alt="imagen4">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/imagen 6.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/imagen 6.jpg" alt="imagen5">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/imagen6.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/imagen6.jpg" alt="imagen6">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg" alt="imagen7">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/Imagen8.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/Imagen8.jpg" alt="imagen8">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg" alt="imagen9">
+        </div>
+        <div class="image-item" onclick="openModal('c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg')">
+            <img src="c:/Users/Dell/Desktop/proyecto CEA/imagnes/images 2.jpg" alt="imagen10">
+        </div>
+        </div>
+
+    <h2>Sube tu diseño textil</h2>
+    <input type="file" accept="image/*" onchange="mostrarImagen(event)">
+    <br><br>
+    <img id="preview" style="max-width:300px; display:none; border: 2px solid #ccc; border-radius: 10px;">
+
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
+
+  </section>
+
+  <section id="aprende">
+    <h2>Aprende</h2>
+    <p>Recursos educativos interactivos para conocer más del arte textil.</p>
+
+    <div class="quiz-container">
+      <h2>¿Cuánto sabes sobre el arte textil Aymara?</h2>
+
+      <div class="question">
+        <p>1. ¿Qué instrumento se usa tradicionalmente para hilar lana?</p>
+        <input type="radio" name="q1" value="0"> Telar<br>
+        <input type="radio" name="q1" value="1"> Pushka<br>
+        <input type="radio" name="q1" value="0"> Tijera<br>
+      </div>
+
+      <div class="question">
+        <p>2. ¿Qué representa comúnmente el color rojo en los tejidos Aymaras?</p>
+        <input type="radio" name="q2" value="1"> Vida y energía<br>
+        <input type="radio" name="q2" value="0"> Tristeza<br>
+        <input type="radio" name="q2" value="0"> Agua<br>
+      </div>
+
+      <div class="question">
+        <p>3. ¿Qué es un “pallay”?</p>
+        <input type="radio" name="q3" value="1"> Diseño o símbolo en el tejido<br>
+        <input type="radio" name="q3" value="0"> Aguja tradicional<br>
+        <input type="radio" name="q3" value="0"> Técnica de lavado<br>
+      </div>
+
+      <button onclick="checkAnswers()">Ver Resultado</button>
+      <div class="result" id="result"></div>
+    </div>
+
+    <script>
+      function checkAnswers() {
+        let score = 0;
+        // Se asegura de que se haya seleccionado una opción antes de intentar obtener su valor
+        const q1_val = document.querySelector('input[name="q1"]:checked');
+        const q2_val = document.querySelector('input[name="q2"]:checked');
+        const q3_val = document.querySelector('input[name="q3"]:checked');
+
+        if (q1_val) score += parseInt(q1_val.value);
+        if (q2_val) score += parseInt(q2_val.value);
+        if (q3_val) score += parseInt(q3_val.value);
+
+        const resultText = `Obtuviste ${score} de 3 respuestas correctas.`;
+        document.getElementById("result").innerText = resultText;
+      }
+    </script>
+
+    <h2>Aprende más</h2>
+    <p>Visita los sitios para aprender más sobre los tejidos:</p>
+    <ul>
+       <li><a href="https://artesania.uc.cl/wp-content/uploads/2022/07/ciencia-y-tecnologia-aymarapdf-compressed.pdf" target="_blank">ciencia y tecnologia aymara</a></li>
+       <li><a href="https://pueblosoriginarios.com/sur/andina/aymara/textil.html" target="_blank">Textileria y Vestimenta Aymara</a></li>
+       <li><a href="https://www.memoriachilena.gob.cl/602/w3-article-74912.html" target="_blank">libro_mujer aymara tejiendo un telares</a></li>
+       <li><a href="https://pueblosoriginarios.com/sur/andina/aymara/textil.html" target="_blank">pueblos oiginarios</a></li>
+    </ul>
+    <p>observa los videos, para aprender mas:</p>
+    <ul>
+     <li><a href="https://www.facebook.com/watch/?v=988744448703057" target="_blank">Leer el mundo atraves del Arte Textil Boliviano</a></li>
+     <li><a href="https://www.tiktok.com/@manuco.arq/video/7289429989559192838" target="_blank">Testimonio de tejido Aymara</a></li>
+    </ul>
+  </section>
+
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p>Gracias por visitarnos. Contáctanos para más información.</p>
+    <p>celular: 65432100</p>
+    <p>Yessica Brenda Atahuachi Lazaro<br>
+    CEA Juan Capriles - Ciudad Satélite<br>
+    WhatsApp: +59169012356</p>
+
+    <p><strong>Escanea el código QR para enviarme un mensaje:</strong></p>
+    <img src="c:\Users\Dell\Desktop\proyecto CEA\imagnes\yH9nbc.jpg" alt="QR WhatsApp" width="100">
+
+    <p>Facebook: Bolivia_tejidosaymara</p>
+    <p>Tiktok: Bol_tejidoaymara</p>
+
+    <div class="registration-form">
+        <h3>Regístrate para recibir novedades</h3>
+        <form id="registrationForm">
+            <label for="regName">Nombre:</label>
+            <input type="text" id="regName" name="regName" required>
+
+            <label for="regEmail">Correo Electrónico:</label>
+            <input type="email" id="regEmail" name="regEmail" required>
+
+            <label for="regInterests">Intereses (opcional):</label>
+            <textarea id="regInterests" name="regInterests" rows="3"></textarea>
+
+            <button type="submit">Registrarme</button>
+        </form>
+        <p id="registrationMessage" style="color: green; display: none;"></p>
+    </div>
+  </section>
+
+  <div id="chat-container">
+    <div id="chat-log"></div>
+    <input type="text" id="chat-input" placeholder="Escribe aquí..." onkeydown="if(event.key==='Enter') responder()">
+  </div>
+
+  <script>
+    function mostrarSeccion(id) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function responder() {
+      const input = document.getElementById("chat-input");
+      const mensaje = input.value.trim();
+      if (!mensaje) return;
+
+      const log = document.getElementById("chat-log");
+      const entrada = document.createElement("div");
+      entrada.textContent = "Tú: " + mensaje;
+      log.appendChild(entrada);
+
+      const respuesta = document.createElement("div");
+      respuesta.textContent = "ChatBot: " + generarRespuesta(mensaje);
+      respuesta.style.color = "green";
+      log.appendChild(respuesta);
+
+      log.scrollTop = log.scrollHeight;
+      input.value = "";
+    }
+
+    function generarRespuesta(mensaje) {
+      mensaje = mensaje.toLowerCase();
+      if (mensaje.includes("hola")) return "¡Hola! Bienvenido a la plataforma del arte textil Aymara.";
+      if (mensaje.includes("tejido")) return "El tejido Aymara transmite historias, conocimientos y espiritualidad.";
+      if (mensaje.includes("contacto")) return "Puedes escribirnos a Bolivia_contacto@aymara.bo.";
+      return "Lo siento, aún estoy aprendiendo. ¿Puedes intentar con otra pregunta?";
+    }
+
+    // Funciones para el modal de imágenes (NUEVO)
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("img01");
+
+    function openModal(imageSrc) {
+        modal.style.display = "flex"; // Usamos flex para centrar
+        modalImg.src = imageSrc;
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // Cierra el modal si se hace clic fuera de la imagen
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // Manejo del formulario de registro (NUEVO)
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita el envío tradicional del formulario
+
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const interests = document.getElementById('regInterests').value;
+        const messageElement = document.getElementById('registrationMessage');
+
+        // En un proyecto real, aquí enviarías los datos a un servidor.
+        // Por ahora, solo mostramos en consola y confirmamos al usuario.
+        console.log("Datos de Registro:");
+        console.log("Nombre:", name);
+        console.log("Email:", email);
+        console.log("Intereses:", interests);
+
+        // Muestra un mensaje de confirmación al usuario
+        messageElement.textContent = `¡Gracias, ${name}! Te has registrado con éxito. Pronto recibirás novedades en ${email}.`;
+        messageElement.style.display = 'block';
+
+        // Opcional: Limpiar el formulario después del envío
+        this.reset();
+
+        // Opcional: Ocultar el mensaje después de unos segundos
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 5000); // Oculta el mensaje después de 5 segundos
+    });
+  </script>
+</body>
+</html>
